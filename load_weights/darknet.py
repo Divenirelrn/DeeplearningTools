@@ -257,7 +257,7 @@ class Darknet(nn.Module):
                     bn.bias.data.copy_(bn_bias)
                     bn.weight.data.copy_(bn_weight)
                     bn.running_mean.copy_(bn_running_mean)
-                    bn_running_var.copy_(bn_running_var)
+                    bn.running_var.copy_(bn_running_var)
 
                 else:
                     conv_bias_count = conv.bias.numel()
