@@ -13,24 +13,6 @@ import pickle as pkl
 import pandas as pd
 
 
-# def plot_rectangle(out, load_imgs):
-#     c1 = tuple(out[1:3].int())
-#     c2 = tuple(out[3:5].int())
-#     color = random.choice(colors)
-#     img = load_imgs[int(out[0])]
-#
-#     cv2.rectangle(img, c1, c2, color, 1)
-#     label = classes[int(out[-1])]
-#     t_size = cv2.getTextSize(label, cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
-#
-#     c2 = c1[0] + t_size[0] +3, c1[1] + t_size[1] + 4
-#     cv2.rectangle(img, c1, c2, color, -1)
-#     cv2.putText(img, label, (c1[0], c1[1] + t_size[1] + 4), cv2.FONT_HERSHEY_PLAIN, 1, [255,255,255], 1)
-#
-#     cv2.imshow("img", img)
-#     cv2.waitKey(1000)
-#     return img
-
 
 def plot_rectangle(out, img_loaded):
     c1 = tuple(out[1:3].int())
@@ -147,11 +129,11 @@ scale_factor = torch.min(inp_size / inp_dim_list, dim=1)[0].view(-1, 1)
 output[:, [1,3]] = output[:, [1,3]] - (inp_size - scale_factor * inp_dim_list[:, 0].view(-1, 1)) / 2
 output[:, [2,4]] = output[:, [2,4]] - (inp_size - scale_factor * inp_dim_list[:, 1].view(-1, 1)) / 2
 
+output[:, 1:5] /= scale_factor
+
 for i in range(output.size(0)):
     output[:, [1,3]] = torch.clamp(output[:, [1,3]], min=0.0, max=inp_dim_list[i, 0])
     output[:, [2,4]] = torch.clamp(output[:, [2,4]], min=0.0, max=inp_dim_list[i, 1])
-
-output[:, 1:5] /= scale_factor
 
 colors = pkl.load(open("pallete", "rb"))
 list(map(lambda x: plot_rectangle(x, img_loaded), output))
