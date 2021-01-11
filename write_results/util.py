@@ -40,105 +40,6 @@ def predict_transform(prediction, inp_dim, anchors, num_classes):
     return prediction
 
 
-# def compute_ious(box1, box2):
-#     box1_x1, box1_y1, box1_x2, box1_y2 = box1[:,0], box1[:,1], box1[:,2], box1[:,3]
-#     box2_x1, box2_y1, box2_x2, box2_y2 = box2[:, 0], box2[:, 1], box2[:, 2], box2[:, 3]
-#
-#     inter_left = torch.max(box1_x1, box2_x1)
-#     inter_top = torch.max(box1_y1, box2_y1)
-#     inter_right = torch.min(box1_x2, box2_x2)
-#     inter_down = torch.min(box1_y2, box2_y2)
-#
-#     inter_area = torch.clamp((inter_right - inter_left), min=0) * torch.clamp((inter_down - inter_top), min=0)
-#
-#     box1_area = (box1_y2 - box1_y1) * (box1_x2 - box1_x1)
-#     box2_area = (box2_y2 - box2_y1) * (box2_x2 - box2_x1)
-#
-#     ious = inter_area / (box1_area + box2_area - inter_area)
-#
-#     return ious
-#
-# def write_results(prediction, confidence, num_classes, nms_conf):
-#     print('prediction:', prediction.shape)
-#     conf_mask = (prediction[:,:,4] > confidence).unsqueeze(2)
-#     print(conf_mask.shape)
-#     prediction = prediction * conf_mask
-#
-#     # box_corner = prediction.new(prediction.shape)
-#     # box_corner[:, :, 0] = prediction[:, :, 0] - prediction[:, :, 2] / 2
-#     # box_corner[:, :, 1] = prediction[:, :, 1] - prediction[:, :, 3] / 2
-#     # box_corner[:, :, 2] = prediction[:, :, 0] + prediction[:, :, 2] / 2
-#     # box_corner[:, :, 3] = prediction[:, :, 1] + prediction[:, :, 3] / 2
-#     # prediction[:,:,:4] = box_corner[:,:,:4]
-#
-#     prediction[:, :, 0] = prediction[:, :, 0] - prediction[:, :, 2] / 2
-#     prediction[:, :, 1] = prediction[:, :, 1] - prediction[:, :, 3] / 2
-#     prediction[:, :, 2] = prediction[:, :, 0] + prediction[:, :, 2] / 2
-#     prediction[:, :, 3] = prediction[:, :, 1] + prediction[:, :, 3] / 2
-#
-#     batch_size = prediction.size(0)
-#     write = 0
-#     for ind in range(batch_size):
-#         img_pred = prediction[ind]
-#         max_score, max_index = torch.max(img_pred[:,5:], 1)
-#
-#         max_index = max_index.unsqueeze(1)
-#         max_score = max_score.unsqueeze(1)
-#
-#         seq = (img_pred[:, :5], max_score, max_index)
-#         img_pred = torch.cat(seq, 1)
-#
-#         nonzero_ind = torch.nonzero(img_pred[:,4])
-#         try:
-#             img_pred = img_pred[nonzero_ind.squeeze(), :].view(-1,7)
-#         except:
-#             continue
-#
-#         if img_pred.size(0) == 0:
-#             continue
-#
-#         img_classes = torch.unique(img_pred[:,-1])
-#
-#         for cls in img_classes:
-#             cls_mask = img_pred * (img_pred[:,-1] == cls).float().unsqueeze(1)
-#             nonzero_ind = torch.nonzero(cls_mask[:,-1]).squeeze()
-#             img_pred_cls = img_pred[nonzero_ind, :].view(-1,7)
-#
-#             _, conf_sort = torch.sort(img_pred_cls[:,4], descending=True)
-#             img_pred_cls = img_pred_cls[conf_sort]
-#
-#             idx = img_pred_cls.size(0)
-#             print(img_pred_cls.shape)
-#
-#             for i in range(idx):
-#                 try:
-#                     ious = compute_ious(img_pred_cls[i].unsqueeze(0), img_pred_cls[i+1:])
-#                 except ValueError:
-#                     break
-#                 except IndexError:
-#                     break
-#
-#                 iou_mask = (ious < nms_conf).float().unsqueeze(1)
-#                 img_pred_cls[i+1:] *= iou_mask
-#
-#                 nonzero_ind = torch.nonzero(img_pred_cls[:,4]).squeeze()
-#                 img_pred_cls = img_pred_cls[nonzero_ind].view(-1,7)
-#
-#             batch_ind = img_pred_cls.new(img_pred_cls.size(0),1).fill_(ind)
-#             seq = (batch_ind, img_pred_cls)
-#
-#             if not write:
-#                 output = torch.cat(seq, 1)
-#                 write = 1
-#             else:
-#                 out = torch.cat(seq, 1)
-#                 output = torch.cat((output, out))
-#
-#     try:
-#         return output
-#     except:
-#         return 0
-
 
 def compute_ious(box1, box2):
     #[1,7], [6,7]
@@ -158,6 +59,7 @@ def compute_ious(box1, box2):
     ious = inter_area / (box1_area + box2_area - inter_area)
 
     return ious
+    
 
 
 def write_results(prediction, conf, num_classes, nms_conf):
@@ -165,10 +67,17 @@ def write_results(prediction, conf, num_classes, nms_conf):
     conf_mask = (prediction[:, :, 4] > conf).unsqueeze(2)
     prediction = prediction * conf_mask
 
-    prediction[:, :, 0] = prediction[:, :, 0] - prediction[:, :, 2] / 2
-    prediction[:, :, 1] = prediction[:, :, 1] - prediction[:, :, 3] / 2
-    prediction[:, :, 2] = prediction[:, :, 0] + prediction[:, :, 2] / 2
-    prediction[:, :, 3] = prediction[:, :, 1] + prediction[:, :, 3] / 2
+    #prediction[:, :, 0] = prediction[:, :, 0] - prediction[:, :, 2] / 2
+    #prediction[:, :, 1] = prediction[:, :, 1] - prediction[:, :, 3] / 2
+    #prediction[:, :, 2] = prediction[:, :, 0] + prediction[:, :, 2] / 2
+    #prediction[:, :, 3] = prediction[:, :, 1] + prediction[:, :, 3] / 2
+    
+    box_corner = prediction.new(prediction.shape)
+    box_corner[:, :, 0] = prediction[:, :, 0] - prediction[:, :, 2] / 2
+    box_corner[:, :, 1] = prediction[:, :, 1] - prediction[:, :, 3] / 2
+    box_corner[:, :, 2] = prediction[:, :, 0] + prediction[:, :, 2] / 2
+    box_corner[:, :, 3] = prediction[:, :, 1] + prediction[:, :, 3] / 2
+    prediction[:, :, :4] = box_corner[:, :, :4]
 
     batch_size = prediction.size(0)
     write = 0
