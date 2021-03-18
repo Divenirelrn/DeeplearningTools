@@ -30,6 +30,16 @@
           <entry key="Python" value="1" />
         </counts>
       </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="txt" value="22" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="PLAIN_TEXT" value="22" />
+        </counts>
+      </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
@@ -45,7 +55,11 @@
       </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/syncBatchNorm/readme.txt">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="529">
+              <caret line="68" selection-start-line="68" selection-end-line="68" />
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -57,6 +71,7 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/layer_freeze.py" />
+        <option value="$PROJECT_DIR$/syncBatchNorm/readme.txt" />
       </list>
     </option>
   </component>
@@ -167,7 +182,11 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/syncBatchNorm/readme.txt">
-      <provider selected="true" editor-type-id="text-editor" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="529">
+          <caret line="68" selection-start-line="68" selection-end-line="68" />
+        </state>
+      </provider>
     </entry>
   </component>
 </project>
